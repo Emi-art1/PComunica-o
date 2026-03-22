@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Comunicação Quest — Aprenda Comunicação Empresarial jogando! 5 mundos, 15 fases, quizzes e recompensas.">
+<title>💬 Comunicação Quest — Aprenda Comunicação Empresarial Jogando</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800;900&family=Press+Start+2P&display=swap');
+
+/* ── TOKENS ─────────────────────────── */
+:root {
+  --bg:       #06030f;
+  --surf:     #0f0a22;
+  --surf2:    #17103a;
+  --surf3:    #201752;
+  --bord:     #2e205a;
+  --bord2:    #5040a0;
+  --acc:      #b48aff;   /* lilac */
+  --acc-dk:   #4c1d95;
+  --acc-glow: #b48aff30;
+  --teal:     #5ce0d8;
+  --pink:     #f472b6;
+  --green:    #4ade80;
+  --red:      #f87171;
+  --txt:      #ede8ff;
+  --muted:    #7060aa;
+  --r:        15px;
+  --rsm:      9px;
+}
+
+/* ── RESET ───────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Baloo 2', system-ui, sans-serif;
+  font-weight: 600;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; outline: none; }
+.px { font-family: 'Press Start 2P', monospace; }
+
+/* ── STARFIELD ───────────────────────── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 90% 55% at 50% -5%, #1e0e5088 0%, transparent 70%),
+    radial-gradient(1.5px 1.5px at 8%  22%, #c4b0ff55, transparent),
+    radial-gradient(1px   1px   at 25% 68%, #ffffff44, transparent),
+    radial-gradient(2px   2px   at 55% 12%, #b48aff66, transparent),
+    radial-gradient(1px   1px   at 78% 85%, #ffffff33, transparent),
+    radial-gradient(1.5px 1.5px at 92% 38%, #5ce0d855, transparent),
+    radial-gradient(1px   1px   at 38% 50%, #ffffff22, transparent),
+    radial-gradient(1px   1px   at 65% 35%, #ffffff22, transparent);
+}
+
+/* ── SCREENS ─────────────────────────── */
+.screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+.screen.on { display: flex; flex-direction: column; }
+
+/* ── BUTTONS ─────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: var(--rsm);
+  font-family: 'Press Start 2P', monospace; font-size: 11px; letter-spacing: .4px;
+  transition: transform .12s, box-shadow .12s, top .12s;
+  position: relative; top: 0; user-select: none;
+  padding: 14px 30px;
+}
+.btn:active { top: 4px !important; box-shadow: none !important; }
+.btn-acc {
+  background: var(--acc); color: #0a0218;
+  box-shadow: 0 5px 0 var(--acc-dk), 0 0 28px var(--acc-glow);
+}
+.btn-acc:hover { transform: translateY(-2px); box-shadow: 0 7px 0 var(--acc-dk), 0 0 50px var(--acc-glow); }
+.btn-teal {
+  background: var(--teal); color: #020f0e;
+  box-shadow: 0 5px 0 #0d6660;
+}
+.btn-teal:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #0d6660; }
+.btn-green {
+  background: var(--green); color: #021408;
+  box-shadow: 0 5px 0 #15803d;
+}
+.btn-green:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #15803d; }
+.btn-ghost {
+  background: transparent; color: var(--muted);
+  border: 2px solid var(--bord); box-shadow: none;
+}
+.btn-ghost:hover { border-color: var(--acc); color: var(--acc); transform: none; }
+.btn-sm  { padding: 9px 18px; font-size: 9px; }
+.btn-lg  { padding: 18px 44px; font-size: 13px; }
+
+/* ── TOP BAR ─────────────────────────── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 20px;
+  background: var(--surf); border-bottom: 2px solid var(--bord);
+  gap: 12px; flex-wrap: wrap; z-index: 10;
+}
+.topbar-logo { font-size: clamp(7px, 1.5vw, 10px); color: var(--acc); }
+.xp-badge {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--surf2); border: 2px solid var(--acc);
+  border-radius: 50px; padding: 6px 16px;
+  font-size: 14px; font-weight: 800; color: var(--acc);
+}
+
+/* ── ANIMATIONS ──────────────────────── */
+@keyframes bounceY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-14px)} }
+@keyframes fadeUp  { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes slideIn { from{opacity:0;transform:translateX(32px)} to{opacity:1;transform:translateX(0)} }
+@keyframes pulse   { 0%,100%{box-shadow:0 0 0 0 #b48aff44} 50%{box-shadow:0 0 0 8px #b48aff00} }
+@keyframes shine   { from{background-position:-200% 0} to{background-position:200% 0} }
+@keyframes confFall{ 0%{transform:translateY(-20px) rotate(0deg);opacity:1}
+                     100%{transform:translateY(110vh) rotate(720deg);opacity:0} }
+
+/* ── INTRO ───────────────────────────── */
+#intro {
+  align-items: center; justify-content: center; text-align: center;
+  padding: 40px 20px;
+  background: radial-gradient(ellipse 110% 75% at 50% 15%, #1e1050 0%, var(--bg) 68%);
+}
+.intro-emoji { font-size: 76px; display: block; animation: bounceY 1.5s ease-in-out infinite; margin-bottom: 20px; }
+.intro-title {
+  font-size: clamp(20px, 4.5vw, 38px); color: var(--acc);
+  text-shadow: 0 0 60px #b48aff66, 4px 4px 0 #2e0e7a;
+  line-height: 1.8; margin-bottom: 12px;
+}
+.intro-sub { font-size: clamp(13px, 2vw, 17px); color: var(--muted); margin-bottom: 36px; font-weight: 700; }
+.pill-row  { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+.pill {
+  background: var(--surf2); border: 2px solid var(--bord);
+  border-radius: 50px; padding: 7px 16px; font-size: 13px; white-space: nowrap;
+}
+.pill span { color: var(--acc); }
+.intro-note { font-size: 12px; color: var(--muted); margin-top: 28px; line-height: 1.9; max-width: 400px; }
+.intro-note strong { color: var(--txt); }
+
+/* ── MAP ─────────────────────────────── */
+#map { padding: 0; }
+.map-inner { padding: 24px 18px; max-width: 1120px; margin: 0 auto; width: 100%; }
+.map-h { text-align: center; font-size: clamp(14px, 3vw, 26px); color: var(--acc); margin-bottom: 6px; }
+.map-p { text-align: center; color: var(--muted); font-size: 14px; margin-bottom: 30px; }
+.world-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 16px; }
+
+/* WORLD CARD */
+.wc {
+  background: var(--surf); border: 2px solid var(--bord);
+  border-radius: var(--r); padding: 22px;
+  cursor: pointer; transition: transform .2s, border-color .2s, box-shadow .2s;
+  position: relative; overflow: hidden;
+}
+.wc::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, #b48aff0a, transparent 55%);
+  opacity: 0; transition: opacity .2s;
+}
+.wc:hover:not(.locked) { transform: translateY(-5px); border-color: var(--bord2); box-shadow: 0 14px 40px #00000066; }
+.wc:hover:not(.locked)::after { opacity: 1; }
+.wc.locked { opacity: .4; cursor: not-allowed; filter: grayscale(.6); }
+.wc.done   { border-color: var(--green); }
+.wc-corner {
+  position: absolute; top: 13px; right: 13px;
+  font-size: 11px; font-weight: 800;
+  padding: 3px 9px; border-radius: 50px; background: var(--surf3);
+}
+.wc-corner.star { color: var(--acc); }
+.wc-corner.lock { font-size: 19px; background: none; }
+.wc-emoji { font-size: 46px; display: block; margin-bottom: 10px; }
+.wc-tag   { font-size: 9px; color: var(--muted); margin-bottom: 6px; }
+.wc-name  { font-size: 15px; font-weight: 900; margin-bottom: 7px; line-height: 1.4; }
+.wc-desc  { font-size: 12px; color: var(--muted); margin-bottom: 16px; line-height: 1.75; }
+.dots { display: flex; gap: 6px; }
+.dot {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surf2); border: 2px solid var(--bord);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; color: var(--muted); transition: all .2s;
+}
+.dot.done  { background: var(--green);  border-color: #15803d; color: #021408; }
+.dot.cur   { background: var(--acc);    border-color: var(--acc-dk); color: #0a0218; animation: pulse 2s infinite; }
+
+/* ── LEVEL ───────────────────────────── */
+#lvl { padding: 0; }
+.lvl-inner { max-width: 800px; margin: 0 auto; padding: 22px 18px; width: 100%; }
+.lvl-nav {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 22px; flex-wrap: wrap;
+}
+.lvl-badge { background: var(--surf2); border: 2px solid var(--bord); border-radius: var(--rsm); padding: 6px 13px; font-size: 9px; color: var(--acc); white-space: nowrap; }
+.prog-bar  { flex: 1; min-width: 60px; height: 10px; background: var(--surf2); border-radius: 10px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--teal), var(--acc)); transition: width .55s cubic-bezier(.4,0,.2,1); }
+
+/* LEARN */
+.card {
+  background: var(--surf); border: 2px solid var(--bord);
+  border-radius: var(--r); padding: 28px;
+}
+.l-tag {
+  display: inline-block; padding: 4px 13px;
+  background: var(--teal); color: #020f0e;
+  border-radius: 50px; font-size: 10px; font-weight: 800; margin-bottom: 14px;
+}
+.l-title { font-size: clamp(16px, 2.8vw, 23px); font-weight: 900; margin-bottom: 13px; line-height: 1.35; }
+.l-body  { font-size: 14px; color: var(--muted); line-height: 1.9; margin-bottom: 18px; }
+.l-body strong { color: var(--txt); }
+.c-grid  { display: grid; grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); gap: 11px; margin: 16px 0; }
+.ci      { background: var(--surf2); border: 2px solid var(--bord); border-radius: 12px; padding: 14px; }
+.ci-ico  { font-size: 26px; margin-bottom: 7px; }
+.ci-name { font-size: 12px; font-weight: 900; color: var(--acc); margin-bottom: 5px; }
+.ci-text { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.info-box {
+  background: #b48aff0c; border: 2px solid var(--acc);
+  border-radius: 12px; padding: 13px 15px;
+  font-size: 13px; line-height: 1.75; margin-top: 16px; color: var(--txt);
+}
+.info-box.teal { background: #5ce0d80c; border-color: var(--teal); }
+
+/* QUIZ */
+.qmeta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px;
+}
+.q-count { font-size: 12px; color: var(--muted); }
+.q-xp    {
+  background: var(--surf2); border: 2px solid var(--acc);
+  border-radius: 50px; padding: 5px 13px; font-size: 12px; color: var(--acc);
+}
+.question { font-size: clamp(14px, 2.3vw, 18px); font-weight: 800; margin-bottom: 24px; line-height: 1.55; }
+.opts     { display: flex; flex-direction: column; gap: 11px; margin-bottom: 18px; }
+.opt {
+  background: var(--surf2); border: 2px solid var(--bord);
+  border-radius: 12px; padding: 14px 18px;
+  text-align: left; font-size: 14px; font-weight: 700; color: var(--txt);
+  transition: border-color .14s, background .14s;
+  display: flex; align-items: flex-start; gap: 12px; line-height: 1.55;
+}
+.opt:hover:not(:disabled) { border-color: var(--teal); background: #5ce0d80a; }
+.opt:disabled { cursor: default; }
+.opt.ok  { border-color: var(--green) !important; background: #4ade800d !important; }
+.opt.bad { border-color: var(--red)   !important; background: #f871710d !important; }
+.opt-k {
+  min-width: 28px; height: 28px; border-radius: 6px;
+  background: var(--bord); display: flex; align-items: center;
+  justify-content: center; font-size: 11px; font-weight: 900;
+  flex-shrink: 0; margin-top: 1px; transition: background .14s;
+}
+.opt.ok  .opt-k { background: var(--green); color: #021408; }
+.opt.bad .opt-k { background: var(--red);   color: #1a0000; }
+.fb {
+  border-radius: 12px; padding: 13px 15px;
+  font-size: 13px; line-height: 1.75; font-weight: 700;
+  display: none; margin-bottom: 14px;
+}
+.fb.show { display: block; }
+.fb.ok   { background: #4ade800d; border: 2px solid var(--green); color: var(--green); }
+.fb.bad  { background: #f871710d; border: 2px solid var(--red);   color: var(--txt);  }
+
+/* ── RESULT ──────────────────────────── */
+#res {
+  align-items: center; justify-content: center; padding: 40px 20px;
+  background: radial-gradient(ellipse 110% 65% at 50% 50%, #1a0e48 0%, var(--bg) 68%);
+}
+.res-box {
+  background: var(--surf); border: 2px solid var(--bord);
+  border-radius: 20px; padding: 44px 36px;
+  text-align: center; max-width: 460px; width: 100%;
+  animation: fadeUp .45s ease;
+}
+.res-emoji { font-size: 70px; display: block; animation: bounceY 1.5s ease-in-out infinite; margin-bottom: 14px; }
+.res-title { font-size: 22px; font-weight: 900; color: var(--acc); margin-bottom: 8px; }
+.res-sub   { font-size: 14px; color: var(--muted); margin-bottom: 28px; line-height: 1.65; }
+.res-stars { font-size: 40px; margin-bottom: 20px; letter-spacing: 4px; }
+.res-xp    {
+  background: #b48aff0d; border: 2px solid var(--acc);
+  border-radius: 12px; padding: 14px;
+  font-size: 18px; font-weight: 900; color: var(--acc); margin-bottom: 28px;
+}
+.res-btns  { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ── CONFETTI ─────────────────────────── */
+#conf { position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden; }
+.cp   {
+  position: absolute; border-radius: 2px;
+  animation: confFall 2.8s linear forwards;
+}
+
+/* ── SCROLL / RESPONSIVE ─────────────── */
+::-webkit-scrollbar { width: 7px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bord); border-radius: 4px; }
+@media (max-width: 520px) {
+  .card  { padding: 18px; }
+  .res-box { padding: 28px 16px; }
+  .btn-lg  { padding: 14px 22px; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════ INTRO ══════ -->
+<div id="intro" class="screen on">
+  <span class="intro-emoji">💬</span>
+  <h1 class="intro-title px">COMUNICAÇÃO<br>QUEST</h1>
+  <p class="intro-sub">Aprenda Comunicação Empresarial jogando!</p>
+
+  <div class="pill-row">
+    <div class="pill">🗺️ <span>5</span> Mundos</div>
+    <div class="pill">⚔️ <span>15</span> Fases</div>
+    <div class="pill">🧠 <span>45</span> Questões</div>
+    <div class="pill">⭐ Estrelas & XP</div>
+    <div class="pill">💾 Progresso Salvo</div>
+  </div>
+
+  <button class="btn btn-acc btn-lg" onclick="showMap()">▶ INICIAR JORNADA</button>
+
+  <p class="intro-note">
+    Conteúdo baseado no material de<br>
+    <strong>Comunicação Empresarial · Técnico em Administração</strong><br>
+    Educação Profissional Paulista
+  </p>
+</div>
+
+<!-- ══════ MAP ══════ -->
+<div id="map" class="screen">
+  <div class="topbar">
+    <span class="topbar-logo px">COMUNICAÇÃO QUEST</span>
+    <div class="xp-badge">🪙 <span id="xp1">0</span> XP</div>
+  </div>
+  <div class="map-inner">
+    <h2 class="map-h px">🗺️ Mapa do Mundo</h2>
+    <p class="map-p">Escolha um mundo para explorar e ganhar XP!</p>
+    <div class="world-grid" id="wgrid"></div>
+  </div>
+</div>
+
+<!-- ══════ LEVEL ══════ -->
+<div id="lvl" class="screen">
+  <div class="topbar">
+    <span class="topbar-logo px">COMUNICAÇÃO QUEST</span>
+    <div class="xp-badge">🪙 <span id="xp2">0</span> XP</div>
+  </div>
+  <div class="lvl-inner">
+    <div class="lvl-nav">
+      <button class="btn btn-ghost btn-sm" onclick="showMap()">← Mapa</button>
+      <div class="lvl-badge px" id="lbadge"></div>
+      <div class="prog-bar"><div class="prog-fill" id="pbar" style="width:0%"></div></div>
+    </div>
+    <div id="lcontent"></div>
+  </div>
+</div>
+
+<!-- ══════ RESULT ══════ -->
+<div id="res" class="screen">
+  <div class="res-box">
+    <span class="res-emoji" id="re">🏆</span>
+    <div class="res-title" id="rt"></div>
+    <div class="res-sub"   id="rs"></div>
+    <div class="res-stars" id="rstar"></div>
+    <div class="res-xp"    id="rxp"></div>
+    <div class="res-btns">
+      <button class="btn btn-ghost btn-sm" onclick="showMap()">🗺️ Mapa</button>
+      <button class="btn btn-green btn-sm" id="rnext">Próxima Fase →</button>
+    </div>
+  </div>
+</div>
+
+<div id="conf"></div>
+
+<script>
+/* ═══════════════════════════════════════════
+   DADOS
+═══════════════════════════════════════════ */
+const W = [
+  /* ─── MUNDO 1 ─── */
+  {
+    emoji:'📡', name:'Conceitos de Comunicação',
+    desc:'O que é comunicação, como funciona o processo e os 3 tipos de comunicação interpessoal.',
+    levels:[
+      {
+        title:'Definição e Importância da Comunicação',
+        sub:'Semana 1 · Aula 1',
+        learn:{
+          tag:'📖 Fundamento',
+          title:'O que é Comunicação?',
+          body:`Comunicação é o <strong>processo de trocar informações, ideias e sentimentos entre pessoas</strong>. Mais do que apenas falar ou escrever, comunicar é garantir que o outro entenda o que você quis dizer.<br><br>
+Nas organizações, ela é fundamental: sem comunicação, equipes não se coordenam, decisões não chegam a quem precisa e os objetivos da empresa ficam perdidos.`,
+          concepts:[
+            {ico:'🔄',name:'Comunicação é troca',txt:'Para que haja comunicação de verdade, é preciso troca — não basta enviar a mensagem, é preciso confirmar que foi compreendida.'},
+            {ico:'🏢',name:'Nas empresas',txt:'A comunicação eficaz coordena equipes, alinha estratégias e mantém um bom clima organizacional.'},
+            {ico:'❌',name:'Falha = problema',txt:'Mal-entendidos, retrabalho, conflitos e decisões erradas — quase tudo isso tem origem em falhas de comunicação.'},
+            {ico:'🎯',name:'Objetivo central',txt:'Garantir que a mensagem chegue ao receptor da forma mais fiel possível ao que o emissor quis dizer.'},
+          ],
+          info:'💡 Estudos mostram que até 80% dos problemas organizacionais têm origem em falhas de comunicação! Uma empresa que se comunica bem tem equipes mais alinhadas e resultados superiores.'
+        },
+        quiz:[
+          {q:'O que é comunicação de verdade, segundo o conceito estudado?',
+           opts:['Apenas enviar mensagens de texto ou e-mails','Transmitir informações de forma unidirecional','Trocar informações de forma que o outro entenda o que foi dito','Falar muito para não deixar dúvidas'],
+           ans:2, fb:'✅ Correto! Comunicar não é só falar — é garantir que a mensagem seja COMPREENDIDA. A comunicação só é eficaz quando todos entendem a mesma coisa.'},
+          {q:'Por que a comunicação é tão importante dentro das organizações?',
+           opts:['Apenas para cumprir exigências legais','Para coordenar equipes, alinhar estratégias e manter bom clima organizacional','Somente para o contato com clientes externos','Para reduzir o número de reuniões'],
+           ans:1, fb:'✅ Exato! Comunicação é o "sistema nervoso" da empresa. Sem ela, nada funciona: decisões não chegam, equipes ficam descoordenadas e os objetivos se perdem.'},
+          {q:'Qual pode ser consequência direta de uma comunicação falha nas organizações?',
+           opts:['Aumento da produtividade da equipe','Melhoria automática do clima organizacional','Mal-entendidos, retrabalho, conflitos e decisões erradas','Redução dos custos operacionais'],
+           ans:2, fb:'✅ Isso mesmo! Um briefing mal dado pode resultar no projeto errado. Um comunicado confuso pode gerar retrabalho. Comunicar bem vale muito!'}
+        ]
+      },
+      {
+        title:'O Processo de Comunicação e seus Elementos',
+        sub:'Semana 1 · Aula 2',
+        learn:{
+          tag:'🔄 Como funciona',
+          title:'Os elementos do processo de comunicação',
+          body:`A comunicação segue um <strong>processo com elementos bem definidos</strong>. Conhecer cada um ajuda a identificar onde as falhas acontecem — e como corrigi-las!<br><br>
+Pense no exemplo de uma padaria: a <strong>dona</strong> (fonte) pede à <strong>funcionária</strong> (transmissora) para colocar um <strong>cartaz</strong> (canal) na porta. Os <strong>clientes</strong> (receptor) leem e entendem que a padaria abrirá mais cedo nos domingos (destino). Se a letra for difícil de ler, isso é um <strong>ruído</strong>.`,
+          concepts:[
+            {ico:'👤',name:'Fonte / Emissor',txt:'Quem origina e deseja transmitir a mensagem — tem a intenção de comunicar algo a alguém.'},
+            {ico:'📩',name:'Mensagem',txt:'O conteúdo que se quer transmitir — informação, ideia, sentimento ou instrução.'},
+            {ico:'📻',name:'Canal',txt:'O meio pelo qual a mensagem é transmitida — e-mail, telefone, face a face, cartaz, chat.'},
+            {ico:'👂',name:'Receptor / Destino',txt:'Quem recebe e interpreta a mensagem — decodifica o que o emissor quis dizer.'},
+            {ico:'🔁',name:'Feedback',txt:'A resposta do receptor — confirma se a mensagem foi recebida e compreendida corretamente.'},
+            {ico:'📶',name:'Ruído',txt:'Qualquer interferência que distorce ou dificulta a comunicação: barulho, letra ilegível, distração, celular.'},
+          ],
+          info:'🎯 O ruído é o grande vilão! Pode ser físico (barulho), semântico (palavra mal interpretada) ou psicológico (preconceito, emoção). Identificar e eliminar ruídos é essencial para comunicar bem.'
+        },
+        quiz:[
+          {q:'No processo de comunicação, o que é o "canal"?',
+           opts:['A resposta do receptor ao emissor','A pessoa que recebe a mensagem','O meio pelo qual a mensagem é transmitida — e-mail, cartaz, fala, chat','O conteúdo da mensagem em si'],
+           ans:2, fb:'✅ Canal é o veículo! E-mail, cartaz, conversa, videoconferência — cada canal tem características próprias e é mais adequado para situações diferentes.'},
+          {q:'Durante uma conversa, notificações do celular atrapalham a compreensão da mensagem. Isso é chamado de:',
+           opts:['Feedback','Canal','Ruído','Fonte'],
+           ans:2, fb:'✅ É um ruído! Qualquer interferência que dificulte a comunicação é ruído — seja físico (barulho), tecnológico (notificações) ou emocional (preocupações).'},
+          {q:'O que é o "feedback" no processo de comunicação?',
+           opts:['A primeira mensagem enviada pelo emissor','O arquivo anexo a um e-mail','O canal de comunicação utilizado','A resposta do receptor que confirma se a mensagem foi compreendida'],
+           ans:3, fb:'✅ Feedback fecha o ciclo! É a resposta que confirma se o receptor entendeu o que o emissor quis dizer. Sem feedback, não sabemos se a comunicação funcionou.'}
+        ]
+      },
+      {
+        title:'Tipos de Comunicação Interpessoal',
+        sub:'Semana 1 · Aula 3',
+        learn:{
+          tag:'🎭 3 Estilos',
+          title:'Passiva, Agressiva ou Assertiva?',
+          body:`Cada pessoa tem um estilo de comunicação interpessoal. Conhecer os <strong>3 tipos</strong> ajuda a identificar o seu e escolher o mais adequado para cada situação!`,
+          concepts:[
+            {ico:'😶',name:'Comunicação Passiva',txt:'A pessoa quase não se expressa, prefere concordar e evitar conflitos. Pode cruzar os braços e não olhar nos olhos. Acumula ressentimentos.'},
+            {ico:'😤',name:'Comunicação Agressiva',txt:'Fala com muita confiança mas ignora a opinião dos outros. Usa frases como "você está errado", inclina-se para frente e olha fixamente.'},
+            {ico:'😊',name:'Comunicação Assertiva',txt:'Fala o que pensa sem medo, explica bem as ideias e as defende. Tom calmo, expressão tranquila e usa as mãos para se expressar.'},
+            {ico:'🏆',name:'Qual usar?',txt:'A comunicação assertiva é o equilíbrio ideal — expressa com clareza e firmeza, respeitando o outro. É a habilidade mais valorizada no mercado!'},
+          ],
+          info:'💡 Um funcionário que não dá ideias com medo de desagradar o chefe está usando comunicação PASSIVA. Ele perde oportunidades e a empresa perde suas contribuições!'
+        },
+        quiz:[
+          {q:'Qual estilo de comunicação é característico de quem evita conflitos, quase não se expressa e prefere concordar com os outros?',
+           opts:['Comunicação assertiva','Comunicação agressiva','Comunicação passiva','Comunicação formal'],
+           ans:2, fb:'✅ Comunicação passiva! A pessoa evita conflitos a qualquer custo — não fala o que pensa, acumula frustrações e perde oportunidades importantes.'},
+          {q:'Um funcionário em reunião fala com muita confiança, usa frases como "você está errado" e ignora as opiniões dos colegas. Que tipo de comunicação é essa?',
+           opts:['Assertiva','Passiva','Agressiva','Formal descendente'],
+           ans:2, fb:'✅ Comunicação agressiva! Impõe suas ideias sem considerar os outros. Pode até "ganhar" no curto prazo, mas perde relacionamentos e o respeito da equipe.'},
+          {q:'Qual tipo de comunicação é a mais indicada no ambiente profissional, pois alia clareza, firmeza e respeito pelo outro?',
+           opts:['Comunicação passiva','Comunicação assertiva','Comunicação agressiva','Comunicação informal'],
+           ans:1, fb:'✅ Comunicação assertiva! É o equilíbrio perfeito: fala o que pensa com clareza e firmeza, mas sempre com respeito e abertura ao diálogo. A habilidade mais valorizada no mercado!'}
+        ]
+      }
+    ]
+  },
+
+  /* ─── MUNDO 2 ─── */
+  {
+    emoji:'🏢', name:'Fluxos e Tipos de Comunicação',
+    desc:'Comunicação formal ascendente, descendente, lateral e informal nas organizações.',
+    levels:[
+      {
+        title:'Comunicação Formal: Ascendente e Descendente',
+        sub:'Semana 2 · Aula 1',
+        learn:{
+          tag:'↕️ Fluxo Vertical',
+          title:'A comunicação que segue a hierarquia',
+          body:`A comunicação formal usa os <strong>canais oficiais da organização</strong>. Quando ela segue a hierarquia, pode fluir para baixo (descendente) ou para cima (ascendente).`,
+          concepts:[
+            {ico:'⬇️',name:'Comunicação Descendente',txt:'Da chefia para os funcionários. Objetivo: alinhar orientações para execução das tarefas. Ex: circulares, reuniões, feedback de desempenho, procedimentos.'},
+            {ico:'⬆️',name:'Comunicação Ascendente',txt:'Dos funcionários para a chefia. Objetivo: dar voz à equipe. Ex: relatórios, sugestões de melhoria, informes sobre dificuldades, tirar dúvidas.'},
+            {ico:'📋',name:'Exemplos formais',txt:'Memorandos, atas de reunião, relatórios oficiais, circulares, e-mails corporativos e formulários padronizados.'},
+            {ico:'⚠️',name:'Quando falha',txt:'Descendente confusa = funcionários sem direção. Ascendente bloqueada = gestores perdem informações valiosas do campo.'},
+          ],
+          info:'💡 A comunicação ascendente permite que os gestores conheçam melhor as opiniões, necessidades e sugestões dos funcionários — o que melhora as decisões e o desenvolvimento dos projetos!'
+        },
+        quiz:[
+          {q:'O que é comunicação descendente?',
+           opts:['De funcionários para a diretoria','Entre colegas do mesmo nível','Da chefia para os funcionários — orientações, metas, políticas e comunicados','Comunicação informal nos corredores'],
+           ans:2, fb:'✅ Descendente flui de cima para baixo! É como a liderança passa instruções, metas e procedimentos para a equipe. Clareza aqui garante que todos saibam o que fazer.'},
+          {q:'Uma funcionária enviou um relatório ao gerente informando dificuldades na execução de tarefas e sugerindo melhorias. Que tipo de comunicação é essa?',
+           opts:['Descendente','Lateral','Ascendente','Informal'],
+           ans:2, fb:'✅ Comunicação ascendente! Vai dos funcionários para a chefia. É fundamental para que os gestores saibam o que realmente acontece na operação.'},
+          {q:'Qual é o principal benefício de uma comunicação ascendente bem estruturada?',
+           opts:['Criar mais documentação burocrática','Permitir que gestores conheçam opiniões e necessidades dos funcionários, melhorando as decisões','Substituir as reuniões de equipe','Reduzir o número de comunicados formais'],
+           ans:1, fb:'✅ Gestores informados tomam melhores decisões! A ascendente traz inteligência "do campo" para quem decide. Sem ela, a liderança fica "cega" para os problemas reais.'}
+        ]
+      },
+      {
+        title:'Comunicação Formal Lateral',
+        sub:'Semana 2 · Aula 2',
+        learn:{
+          tag:'↔️ Entre Pares',
+          title:'A comunicação entre áreas do mesmo nível',
+          body:`A comunicação formal lateral é a <strong>comunicação interdepartamental</strong> — acontece entre pessoas ou áreas que estão no mesmo nível hierárquico, sem relação de subordinação entre elas.`,
+          concepts:[
+            {ico:'↔️',name:'O que é',txt:'Comunicação entre pessoas ou departamentos do mesmo nível hierárquico. Ex: coordenador de recepção combinando horários com coordenador de atendimento.'},
+            {ico:'🔧',name:'Solução intradepartamental',txt:'Entre colaboradores da mesma unidade. Ex: colega do setor financeiro pede para outro preencher um relatório.'},
+            {ico:'🤝',name:'Coordenação interdepartamental',txt:'Entre setores diferentes. Ex: o setor de estoque agenda reunião com o setor de vendas para alinhar quantidades.'},
+            {ico:'🎓',name:'Assessoria',txt:'Informações de especialistas para gestores de setores. Ex: especialista em contabilidade ajuda gerente financeiro a interpretar relatório.'},
+            {ico:'✅',name:'Vantagens',txt:'Troca ágil de informações, maior integração entre áreas, trabalho colaborativo e desenvolvimento de soluções conjuntas.'},
+            {ico:'⚠️',name:'Desvantagens',txt:'Pode gerar conflitos de interesse entre áreas, excesso de reuniões ou decisões sem passar pela hierarquia adequada.'},
+          ],
+          info:'🎯 Exemplo real: na empresa LogTransporte, a supervisora de entregas comunicou ao supervisor de manutenção sobre falhas nos caminhões. Juntos, ajustaram o cronograma para revisão sem prejudicar as rotas. Isso é lateral!'
+        },
+        quiz:[
+          {q:'O coordenador da recepção envia um e-mail formal ao coordenador do atendimento ao cliente para combinar horários. Que tipo de comunicação é essa?',
+           opts:['Formal descendente','Informal ascendente','Formal lateral','Formal ascendente'],
+           ans:2, fb:'✅ Comunicação formal lateral! Dois coordenadores (mesmo nível) trocando informação por canal oficial. É interdepartamental — sem relação de subordinação entre eles.'},
+          {q:'Qual é uma vantagem direta da comunicação lateral bem utilizada?',
+           opts:['Cria mais documentação e controle burocrático','Facilita a troca de informações e a integração entre equipes de diferentes setores','Substitui completamente a comunicação hierárquica','Elimina a necessidade de reuniões presenciais'],
+           ans:1, fb:'✅ A lateral une as áreas! Quando departamentos se comunicam bem entre si, problemas são resolvidos mais rápido, a colaboração aumenta e o resultado coletivo melhora.'},
+          {q:'Quando a comunicação lateral não funciona bem nas organizações, o que costuma ocorrer?',
+           opts:['Os resultados melhoram automaticamente','As áreas ficam mais focadas em suas próprias tarefas','Formam-se "silos" — departamentos isolados que não se integram, gerando retrabalho e conflitos','O número de reuniões diminui bastante'],
+           ans:2, fb:'✅ Silos são o grande problema! Quando as áreas não conversam, a empresa perde eficiência: o que um setor precisa o outro não sabe, gerando retrabalho e oportunidades perdidas.'}
+        ]
+      },
+      {
+        title:'Comunicação Informal',
+        sub:'Semana 2 · Aula 3',
+        learn:{
+          tag:'☕ Além do Organograma',
+          title:'A comunicação que acontece naturalmente',
+          body:`A comunicação informal é a que acontece <strong>fora dos canais oficiais</strong> — conversas no café, grupos de aplicativos, amizades no trabalho. Ela existe em toda organização e os gestores precisam entendê-la!`,
+          concepts:[
+            {ico:'💬',name:'O que é',txt:'Comunicação espontânea fora dos canais formais. Surge naturalmente por afinidade, amizade ou necessidade de falar algo rapidamente.'},
+            {ico:'📻',name:'"Rádio corredor"',txt:'As redes informais circulam informações rapidamente — às vezes antes mesmo do comunicado oficial. Gestores atentos a monitoram.'},
+            {ico:'✅',name:'Aspectos positivos',txt:'Integração social entre as pessoas, circulação rápida de informações, levantamento de problemas reais e criatividade.'},
+            {ico:'⚠️',name:'Aspectos negativos',txt:'Boatos e fofocas que distorcem informações, clima de desconfiança e conflitos desnecessários — especialmente em períodos de mudança.'},
+            {ico:'🎯',name:'Como lidar',txt:'Gestores inteligentes monitoram a informal e respondem com comunicação oficial clara e rápida antes que boatos se espalhem.'},
+          ],
+          info:'💡 O vácuo de informação é sempre preenchido por boatos! Quando a empresa não comunica, as pessoas criam suas próprias narrativas — quase sempre mais pessimistas que a realidade.'
+        },
+        quiz:[
+          {q:'O que caracteriza a comunicação informal nas organizações?',
+           opts:['Relatórios e memorandos oficiais entre departamentos','Comunicação espontânea fora dos canais formais — conversas, grupos de app, redes informais','Apresentações formais à diretoria','E-mails corporativos com cópia para gestores'],
+           ans:1, fb:'✅ Informal é o que acontece naturalmente! Conversa no café, grupo de WhatsApp da equipe, papo no corredor — existem em toda organização e não seguem o organograma.'},
+          {q:'O que é a "rádio corredor" nas organizações?',
+           opts:['Um programa de rádio para funcionários','A rede de comunicação formal da empresa','O fluxo informal de informações que circula rapidamente entre os funcionários','Um sistema de comunicação interno oficial'],
+           ans:2, fb:'✅ "Rádio corredor" é a rede informal! Informações (e boatos) circulam rapidamente por ela. Gestores atentos a monitoram para entender o clima e agir antes que boatos se espalhem.'},
+          {q:'Qual é o maior risco da comunicação informal nas organizações?',
+           opts:['Ser mais rápida que a comunicação formal','A propagação de boatos que distorcem informações, geram desconfiança e prejudicam o clima','Criar laços de amizade entre os funcionários','Facilitar a comunicação entre diferentes níveis'],
+           ans:1, fb:'✅ Boatos são o grande risco! Uma informação distorcida espalhada pela "rádio corredor" pode gerar pânico, desmotivação e conflitos. A melhor defesa é comunicação oficial clara e frequente.'}
+        ]
+      }
+    ]
+  },
+
+  /* ─── MUNDO 3 ─── */
+  {
+    emoji:'🌐', name:'Democratização da Informação',
+    desc:'Era Digital, TICs, barreiras de acesso e como a tecnologia democratiza a informação.',
+    levels:[
+      {
+        title:'A Era Digital e as TICs',
+        sub:'Semana 3 · Aula 1 (parte)',
+        learn:{
+          tag:'💻 Era Digital',
+          title:'Vivemos em um novo tempo',
+          body:`Vivemos na <strong>Era Digital</strong>, marcada pelo uso das Tecnologias de Informação e Comunicação (TICs) — computadores, smartphones, internet e redes sociais. Elas revolucionaram a forma de acessar, guardar e compartilhar informações!`,
+          concepts:[
+            {ico:'📱',name:'O que são TICs',txt:'Tecnologias de Informação e Comunicação: computadores, smartphones, tablets, internet, redes sociais e sistemas digitais em geral.'},
+            {ico:'🚀',name:'Impacto',txt:'As TICs permitiram armazenar, transmitir e processar grandes volumes de dados com velocidade e custo muito menores.'},
+            {ico:'🌍',name:'Democratização',txt:'Disponibilizar e compartilhar o acesso à informação de forma ampla, sem restrições, dando igualdade de oportunidades a todos.'},
+            {ico:'💡',name:'Por que importa',txt:'Promove inclusão social, cidadania ativa e participação democrática. Pessoas informadas tomam melhores decisões.'},
+          ],
+          info:'💡 Antes das TICs, acessar informação era caro e difícil. Hoje, com um smartphone e internet, qualquer pessoa pode aprender quase qualquer coisa. Essa é a essência da democratização!'
+        },
+        quiz:[
+          {q:'O que são as TICs (Tecnologias de Informação e Comunicação)?',
+           opts:['Apenas computadores e impressoras','Computadores, smartphones, internet, redes sociais e sistemas digitais que processam e transmitem informações','Somente os sistemas usados por grandes empresas','Técnicas de comunicação verbal em empresas'],
+           ans:1, fb:'✅ TICs são todas as tecnologias digitais! Smartphones, internet, redes sociais, cloud — juntas, elas transformaram completamente como nos comunicamos e acessamos informação.'},
+          {q:'O que significa "democratizar a informação"?',
+           opts:['Votar sobre quais informações podem ser compartilhadas','Compartilhar todas as informações sem qualquer critério ou filtro','Disponibilizar o acesso à informação de forma ampla, sem restrições, dando igualdade de oportunidades a todos','Criar departamentos específicos de comunicação'],
+           ans:2, fb:'✅ Democratizar é garantir acesso igualitário! Não é dar tudo para todos sem critério, mas garantir que barreiras injustas (custo, localização, idioma) não impeçam ninguém de se informar.'},
+          {q:'Qual tecnologia permite que qualquer pessoa compartilhe informações em tempo real, ajudando a democratizar o acesso?',
+           opts:['Livros didáticos impressos','TV por assinatura paga','Redes sociais na internet','Fax e telex'],
+           ans:2, fb:'✅ Redes sociais! Qualquer pessoa com internet pode publicar, compartilhar e consumir informações em tempo real — para todo o mundo. Isso foi uma revolução no acesso à informação.'}
+        ]
+      },
+      {
+        title:'Barreiras da Democratização',
+        sub:'Semana 3 · Aula 1 (cont.)',
+        learn:{
+          tag:'🚧 Obstáculos',
+          title:'O que ainda impede o acesso igualitário?',
+          body:`Mesmo com os avanços tecnológicos, ainda existem <strong>barreiras que dificultam o acesso pleno à informação</strong> para todos. Reconhecê-las é o primeiro passo para criar soluções mais justas!`,
+          concepts:[
+            {ico:'💸',name:'Barreira Econômica',txt:'Custo de dispositivos e internet ainda é alto para parte da população — nem todos podem pagar por acesso de qualidade.'},
+            {ico:'📶',name:'Falta de Infraestrutura',txt:'Dificuldade de acesso à internet em regiões remotas, periferias ou áreas rurais sem conexão adequada.'},
+            {ico:'📚',name:'Baixa Escolaridade',txt:'Dificuldade de interpretar e usar informações — não basta ter acesso se não se sabe como usar o que está disponível.'},
+            {ico:'🗣️',name:'Barreira Linguística',txt:'Informações disponíveis apenas em certos idiomas ou com linguagem técnica inacessível para parte da população.'},
+            {ico:'♿',name:'Acessibilidade',txt:'Pessoas com deficiência visual, auditiva ou motora podem encontrar barreiras em plataformas não acessíveis.'},
+            {ico:'👴',name:'Exclusão Digital',txt:'Pessoas mais velhas ou sem familiaridade com tecnologia têm dificuldade em usar as ferramentas digitais disponíveis.'},
+          ],
+          info:'⚠️ Imagine uma empresa onde as informações ficam concentradas apenas nos gerentes. Os funcionários não conseguem acessar dados essenciais, gerando desorganização e erros. Isso é falta de democratização interna!'
+        },
+        quiz:[
+          {q:'Qual das opções representa uma barreira real à democratização da informação?',
+           opts:['A existência de bibliotecas públicas em cidades','A presença de redes sociais gratuitas','Dificuldade de acesso à internet em regiões sem infraestrutura adequada','O excesso de canais de informação disponíveis'],
+           ans:2, fb:'✅ Falta de infraestrutura é uma barreira séria! Sem conexão adequada, as pessoas simplesmente não conseguem acessar o mundo digital — independentemente de quanto queiram.'},
+          {q:'Por que a baixa escolaridade é considerada uma barreira à democratização da informação?',
+           opts:['Porque pessoas sem estudo não têm interesse em informação','Porque não basta ter acesso se não se consegue interpretar e usar adequadamente as informações disponíveis','Porque escolas ensinam apenas informações desatualizadas','Porque a leitura não é mais necessária na Era Digital'],
+           ans:1, fb:'✅ Acesso sem compreensão não basta! Ter internet não resolve se a pessoa não consegue interpretar o que lê. Alfabetização digital e letramento são tão importantes quanto o acesso em si.'},
+          {q:'Numa empresa, informações importantes ficam concentradas apenas nos gerentes, dificultando o trabalho dos outros funcionários. O que isso representa?',
+           opts:['Uma boa prática de gestão da informação','Uma estratégia de segurança bem aplicada','Uma barreira interna à democratização da informação, que gera desorganização e erros','Um modelo de comunicação ascendente eficiente'],
+           ans:2, fb:'✅ Concentração de informação = barreira interna! Quando só os gestores têm acesso às informações necessárias, os demais funcionários erram por falta de dados. Democratizar a informação internamente melhora toda a empresa.'}
+        ]
+      },
+      {
+        title:'Tecnologias que Democratizam a Informação',
+        sub:'Semana 3 · Aula 2',
+        learn:{
+          tag:'🛠️ Ferramentas',
+          title:'Como a tecnologia abre o acesso',
+          body:`Várias <strong>tecnologias e iniciativas práticas</strong> estão ajudando a derrubar as barreiras de acesso à informação — nas organizações e na sociedade!`,
+          concepts:[
+            {ico:'📚',name:'Bibliotecas digitais',txt:'Sites com livros, artigos e materiais gratuitos para qualquer pessoa acessar. Ex: Project Gutenberg, Domínio Público.'},
+            {ico:'🎓',name:'Cursos on-line gratuitos',txt:'Plataformas que disponibilizam cursos gratuitos para qualquer pessoa desenvolver habilidades. Ex: Coursera, YouTube.'},
+            {ico:'💻',name:'Código aberto (open source)',txt:'Softwares gratuitos e colaborativos que qualquer pessoa pode usar sem pagar. Ex: Linux, LibreOffice, WordPress.'},
+            {ico:'📖',name:'Bibliotecas comunitárias',txt:'Ações nas comunidades para incentivar a troca e o compartilhamento de livros e materiais entre as pessoas.'},
+            {ico:'🌐',name:'Redes sociais',txt:'Permitem que qualquer pessoa compartilhe informações em tempo real para uma audiência global, de graça.'},
+            {ico:'♿',name:'Tecnologia assistiva',txt:'Leitores de tela, legendas automáticas, conteúdo em Libras — tornam a informação acessível a pessoas com deficiência.'},
+          ],
+          info:'🎯 Nas organizações: intranets, plataformas colaborativas (Google Workspace, Teams) e dashboards em tempo real garantem que todos os funcionários tenham acesso às informações que precisam para trabalhar bem!'
+        },
+        quiz:[
+          {q:'O que é um software de "código aberto"?',
+           opts:['Um programa muito caro mas de alta qualidade','Um software que só pode ser usado por grandes empresas','Um software gratuito e colaborativo que qualquer pessoa pode usar sem pagar','Um sistema que só funciona com internet de alta velocidade'],
+           ans:2, fb:'✅ Open source = livre para todos! Linux, LibreOffice, WordPress — softwares gratuitos e colaborativos que removem a barreira financeira para quem precisa de tecnologia mas não tem como pagar.'},
+          {q:'Como plataformas de cursos on-line gratuitos contribuem para a democratização da informação?',
+           opts:['Oferecendo apenas cursos de tecnologia avançada','Permitindo que qualquer pessoa, de qualquer lugar, desenvolva habilidades e conhecimentos sem custo','Substituindo completamente as escolas presenciais','Criando conteúdo exclusivo para empresas'],
+           ans:1, fb:'✅ Educação acessível! Uma pessoa em qualquer cidade do Brasil pode aprender programação, inglês ou gestão num curso gratuito online. Isso nivela oportunidades independente de onde a pessoa nasceu.'},
+          {q:'Nas organizações, qual ferramenta ajuda a democratizar o acesso às informações internas para todos os funcionários?',
+           opts:['Grupos de WhatsApp pessoal','E-mails encaminhados manualmente pelos gestores','Plataformas colaborativas como intranets e Google Workspace, com documentos compartilhados e acessíveis','Reuniões presenciais diárias obrigatórias'],
+           ans:2, fb:'✅ Plataformas colaborativas democratizam a informação interna! Quando documentos, políticas e dados estão em um lugar acessível a todos, cada funcionário pode trabalhar com autonomia e eficiência.'}
+        ]
+      }
+    ]
+  },
+
+  /* ─── MUNDO 4 ─── */
+  {
+    emoji:'🤲', name:'Comunicação Não Verbal',
+    desc:'Gestos, expressões, postura e tom de voz — o que dizemos sem usar palavras!',
+    levels:[
+      {
+        title:'Conceito e Importância da Comunicação Não Verbal',
+        sub:'Semana 4 · Aula 1',
+        learn:{
+          tag:'👁️ Além das Palavras',
+          title:'O que é comunicação não verbal?',
+          body:`A comunicação não verbal é a <strong>transmissão de informações sem o uso de palavras</strong> — por gestos, expressões faciais, postura corporal, contato visual e outros sinais físicos.<br><br>
+Ela pode revelar muito sobre os <strong>sentimentos, comportamento e intenções</strong> de uma pessoa — às vezes mais do que as palavras em si. Comunicação verbal e não verbal se combinam e influenciam uma a outra!`,
+          concepts:[
+            {ico:'🤸',name:'Postura corporal',txt:'Postura ereta = profissionalismo e interesse. Encurvada = desânimo ou timidez. O corpo fala antes de você abrir a boca!'},
+            {ico:'😊',name:'Expressões faciais',txt:'O rosto revela emoções que as palavras tentam esconder — alegria, raiva, surpresa, medo, concordância.'},
+            {ico:'👁️',name:'Contato visual',txt:'Olhar nos olhos = atenção, honestidade e confiança. Desviar o olhar pode indicar insegurança ou desinteresse.'},
+            {ico:'🎵',name:'Tom de voz',txt:'O COMO você fala é tão importante quanto o QUÊ você fala. Tom, ritmo e volume revelam emoções e intenções.'},
+            {ico:'🤝',name:'Aperto de mão',txt:'Aperto firme e contato visual = confiança e profissionalismo. É um dos primeiros sinais não verbais numa negociação.'},
+            {ico:'😑',name:'Expressão neutra',txt:'Em conflitos, expressão neutra = calma e controle. Evita mal-entendidos e mostra equilíbrio emocional.'},
+          ],
+          info:'📊 Cruzar os braços durante uma reunião pode comunicar fechamento ou defensividade — mesmo que você esteja apenas com frio! No ambiente profissional, postura aberta transmite receptividade.'
+        },
+        quiz:[
+          {q:'O que é comunicação não verbal?',
+           opts:['Comunicação exclusivamente por escrito','Somente a linguagem de sinais para pessoas surdas','Transmissão de informações sem palavras — por gestos, expressões, postura e outros sinais físicos','Comunicação feita sem autorização formal'],
+           ans:2, fb:'✅ Não verbal é poderoso! Tudo que comunicamos sem usar palavras: postura, gestos, olhar, expressão facial, tom de voz. O corpo muitas vezes "fala" mais que as palavras.'},
+          {q:'Qual das opções abaixo é um exemplo de comunicação NÃO VERBAL?',
+           opts:['Enviar um e-mail para um colega','Ler um relatório da empresa','Fazer uma ligação para um cliente','Cruzar os braços durante uma reunião'],
+           ans:3, fb:'✅ Cruzar os braços é comunicação não verbal! Esse gesto pode ser interpretado como fechamento, defensividade ou desinteresse — sem dizer uma única palavra.'},
+          {q:'Por que a comunicação verbal e não verbal "se combinam e influenciam uma a outra"?',
+           opts:['Porque são completamente independentes e não se relacionam','Porque gestos e tom de voz podem reforçar ou contrariar o que está sendo dito com palavras','Porque a não verbal sempre sobrepõe a verbal','Porque ambas só funcionam no ambiente presencial'],
+           ans:1, fb:'✅ Elas se complementam! Dizer "estou bem" sorrindo reforça a mensagem. Dizer "estou bem" com voz triste e olhar no chão contradiz as palavras. O receptor tende a acreditar no não verbal!'}
+        ]
+      },
+      {
+        title:'Falhas na Comunicação Não Verbal',
+        sub:'Semana 4 · Aula 2',
+        learn:{
+          tag:'⚠️ Erros Invisíveis',
+          title:'Quando o corpo "mente" ou atrapalha',
+          body:`Às vezes enviamos <strong>mensagens não verbais sem perceber</strong> — e essas mensagens podem prejudicar nossa comunicação, mesmo que nossas palavras estejam corretas. Conhecer os erros mais comuns é o primeiro passo para evitá-los!`,
+          concepts:[
+            {ico:'😬',name:'Expressões involuntárias',txt:'Transmitem emoções não intencionais: franzir a testa ao ouvir uma ideia pode parecer desaprovação, mesmo que você esteja apenas concentrado.'},
+            {ico:'📱',name:'Celular durante reunião',txt:'O impacto de não ouvir o outro: usar o celular durante uma conversa ou reunião comunica claramente que o que está ali é mais importante que a pessoa.'},
+            {ico:'🦾',name:'Contradição fala × corpo',txt:'Quando as palavras dizem algo e o corpo diz outro — o receptor sente confusão e desconfiança. Ex: dizer "adorei a ideia" com expressão fechada.'},
+            {ico:'👀',name:'Evitar contato visual',txt:'Transmite impressão de insegurança, distração ou que a pessoa está escondendo algo. Prejudica a confiança e a clareza na comunicação.'},
+          ],
+          info:'💡 Quando há inconsistência entre o que você diz e o que seu corpo comunica, as pessoas tendem a acreditar mais na linguagem corporal — ela parece mais autêntica e difícil de fingir.'
+        },
+        quiz:[
+          {q:'Por que usar o celular durante uma reunião é considerado uma falha de comunicação não verbal?',
+           opts:['Porque o celular faz barulho e atrapalha','Porque comunica claramente que o que está no celular é mais importante que as pessoas presentes','Porque pode revelar informações confidenciais','Porque impede a comunicação verbal adequada'],
+           ans:1, fb:'✅ Celular = desrespeito não verbal! Você pode não dizer uma palavra, mas o gesto de olhar o celular diz claramente: "O que está aqui me importa mais que você." Em reuniões, celular guardado é o mínimo.'},
+          {q:'O que acontece quando existe contradição entre o que a pessoa fala e o que seu corpo comunica?',
+           opts:['As pessoas acreditam mais nas palavras, pois são mais claras','As pessoas ficam confusas e tendem a acreditar mais na linguagem corporal, que parece mais autêntica','A comunicação se torna mais interessante e criativa','Nada — as pessoas desconsideram os dois lados'],
+           ans:1, fb:'✅ O corpo não mente! Quando fala e corpo se contradizem, o receptor sente algo errado — e geralmente acredita no corpo. Autenticidade é a base: pense, sinta e fale de forma coerente.'},
+          {q:'Evitar o contato visual durante uma conversa profissional pode transmitir qual mensagem não intencional?',
+           opts:['Que a pessoa está muito concentrada e atenta','Que a pessoa é muito educada e respeitosa','Insegurança, distração ou que a pessoa está escondendo algo','Que a pessoa prefere comunicação escrita'],
+           ans:2, fb:'✅ Olhar é confiança! Desviar o olhar pode passar impressão de insegurança, desonestidade ou desinteresse — mesmo que você seja honesto e esteja prestando atenção. Treinar o contato visual adequado faz diferença.'}
+        ]
+      },
+      {
+        title:'Comunicação Não Verbal nas Organizações',
+        sub:'Semana 4 · Aula 3',
+        learn:{
+          tag:'🏆 Na Prática',
+          title:'Usando o não verbal a seu favor',
+          body:`Agora que conhecemos o poder do não verbal, vamos ver como ele se aplica diretamente no <strong>ambiente profissional</strong> — e como usá-lo conscientemente para transmitir confiança, respeito e credibilidade!`,
+          concepts:[
+            {ico:'🏛️',name:'Postura ereta',txt:'Postura profissional — comunica interesse, respeito e segurança. Em pé, ombros abertos, cabeça erguida.'},
+            {ico:'🤝',name:'Aperto de mão firme',txt:'Confiança e segurança — um dos primeiros sinais num contato profissional. Firme (mas não esmagador) com contato visual.'},
+            {ico:'😄',name:'Sorriso no atendimento',txt:'Simpatia e acolhimento — fundamental no atendimento ao cliente. Cria conexão imediata e receptividade.'},
+            {ico:'👁️',name:'Contato visual na conversa',txt:'Atenção e honestidade — demonstra que você está presente e comprometido com aquela troca.'},
+            {ico:'🙇',name:'Bater à porta',txt:'Respeito ao espaço alheio — pequeno gesto, grande impacto. Demonstra que você respeita os limites e a privacidade dos colegas.'},
+            {ico:'😌',name:'Expressão neutra em conflitos',txt:'Calma e controle emocional — em situações de tensão, expressão neutra evita escalada e mostra maturidade.'},
+          ],
+          info:'🎯 Tabela resumo do material: Postura ereta = interesse e respeito. Aperto firme = confiança. Sorriso = acolhimento. Contato visual = atenção e honestidade. Bater à porta = respeito ao espaço alheio.'
+        },
+        quiz:[
+          {q:'Qual comportamento não verbal demonstra respeito ao espaço e à privacidade dos colegas no ambiente de trabalho?',
+           opts:['Falar em voz alta para ser ouvido','Enviar mensagens de texto em vez de conversar','Bater à porta antes de entrar no ambiente da pessoa','Manter a câmera apagada em videoconferências'],
+           ans:2, fb:'✅ Bater à porta é respeito! Parece pequeno, mas comunica que você reconhece o espaço do outro. É um dos gestos mais básicos de consideração no ambiente profissional.'},
+          {q:'Em uma situação de conflito no trabalho, manter uma expressão facial neutra comunica:',
+           opts:['Que você não se importa com o assunto discutido','Indiferença total à situação','Calma, controle emocional e maturidade profissional','Que você concorda com tudo que foi dito'],
+           ans:2, fb:'✅ Neutralidade em conflitos = maturidade! Em vez de deixar o rosto "falar" por impulso, manter expressão neutra demonstra controle emocional e evita que o conflito escale desnecessariamente.'},
+          {q:'Por que um sorriso genuíno é importante no atendimento ao cliente?',
+           opts:['Porque é obrigação legal do funcionário','Porque mascara os problemas reais do serviço','Porque transmite simpatia e acolhimento, criando imediata conexão e receptividade','Porque substitui a necessidade de comunicação verbal'],
+           ans:2, fb:'✅ Sorriso abre portas! É o primeiro sinal não verbal de boas-vindas. Um atendimento com sorriso genuíno cria ambiente receptivo e positivo — o cliente se sente valorizado antes mesmo de falar.'}
+        ]
+      }
+    ]
+  },
+
+  /* ─── MUNDO 5 ─── */
+  {
+    emoji:'💪', name:'Comunicação Assertiva',
+    desc:'Conceitos, princípios, falhas comuns e técnicas práticas da comunicação assertiva.',
+    levels:[
+      {
+        title:'Comunicação Assertiva: Conceito e Princípios',
+        sub:'Semana 5 · Aula 1',
+        learn:{
+          tag:'⚡ A habilidade mais valorizada',
+          title:'O que é ser assertivo?',
+          body:`Comunicação assertiva é <strong>falar com clareza, respeito e honestidade</strong>, expressando fatos, ideias e sentimentos de forma direta. É o equilíbrio entre a passividade (calar) e a agressividade (impor).<br><br>
+Uma pessoa assertiva age de forma coerente — <strong>une o que pensa, sente e faz</strong>. Comunica-se com firmeza e gentileza ao mesmo tempo.`,
+          concepts:[
+            {ico:'🎯',name:'1. Respeito',txt:'Considerar os sentimentos e opiniões dos outros, ouvindo com atenção e tratando todos com respeito mútuo.'},
+            {ico:'💡',name:'2. Honestidade',txt:'Expressar-se de forma sincera e verdadeira, sem ser grosseiro ou mentir para evitar conflitos.'},
+            {ico:'👂',name:'3. Escuta ativa',txt:'Prestar atenção no que o outro está dizendo, sem interrompê-lo — ouvir de verdade antes de responder.'},
+            {ico:'🗣️',name:'4. Clareza',txt:'Falar de forma simples e fácil de entender — sem rodeios excessivos nem ambiguidades que confundam.'},
+            {ico:'🤗',name:'5. Empatia',txt:'Colocar-se no lugar do outro e considerar seus sentimentos antes de responder.'},
+            {ico:'📍',name:'6. Objetividade',txt:'Ir direto ao ponto. Sem enrolação — mas sem deixar de dar o contexto necessário.'},
+          ],
+          info:'💬 Exemplo real do material: Ana, da equipe de vendas, diz ao gestor: "Percebi que algumas metas estão difíceis de cumprir (honestidade). Quero conversar sobre ajustes (objetividade). Entendo as necessidades da empresa (empatia) e estou aberta a sugestões (escuta ativa)." Isso é assertividade!'
+        },
+        quiz:[
+          {q:'O que é comunicação assertiva?',
+           opts:['Comunicar-se sempre de forma muito firme e direta, sem ceder jamais','Expressar fatos, ideias e sentimentos com clareza, respeito e honestidade — firmeza com gentileza','Evitar qualquer conflito concordando com os outros','Comunicar-se apenas por escrito para ter registro oficial'],
+           ans:1, fb:'✅ Assertividade é equilíbrio! Nem passiva (cala tudo) nem agressiva (atropela todos). Fala com clareza e firmeza, mas sempre com respeito — chegando ao entendimento sem ferir relacionamentos.'},
+          {q:'Qual dos itens abaixo é um dos PRINCÍPIOS da comunicação assertiva?',
+           opts:['Impor suas ideias sem ouvir os outros','Concordar sempre para evitar qualquer conflito','Escuta ativa — prestar atenção no que o outro diz sem interrompê-lo','Falar alto para demonstrar segurança'],
+           ans:2, fb:'✅ Escuta ativa é um dos pilares! Assertividade não é só falar bem — é também OUVIR bem. Quem não escuta não consegue ser assertivo de verdade, pois responde sem entender o contexto.'},
+          {q:'Qual tipo de comunicação é clara, respeitosa e direta, permitindo falar com firmeza e ouvir o outro com atenção?',
+           opts:['Comunicação agressiva','Comunicação passiva','Comunicação informal','Comunicação assertiva'],
+           ans:3, fb:'✅ Comunicação assertiva! Firme e gentil ao mesmo tempo. É a que une o que você pensa, sente e faz — de forma coerente e respeitosa com o outro.'}
+        ]
+      },
+      {
+        title:'Falhas Comuns na Comunicação Assertiva',
+        sub:'Semana 5 · Aula 2',
+        learn:{
+          tag:'⚠️ Erros a evitar',
+          title:'O que sabota a assertividade?',
+          body:`Mesmo querendo ser assertivo, cometemos erros que comprometem nossa comunicação. Conhecê-los é essencial para superá-los no dia a dia profissional!`,
+          concepts:[
+            {ico:'🙄',name:'Generalizar',txt:'"Você SEMPRE faz isso", "Nunca dá certo aqui" — generalizações geram defesa no receptor e bloqueiam o diálogo construtivo.'},
+            {ico:'😑',name:'Criticar a pessoa',txt:'"Você é irresponsável" vs "Este relatório atrasou 3 dias". Foque no comportamento específico, não em rótulos da pessoa.'},
+            {ico:'💣',name:'Acumular para explodir',txt:'Guardar insatisfações e depois desabafar tudo de uma vez — perde o foco, gera drama e prejudica o relacionamento.'},
+            {ico:'🔊',name:'Tom inadequado',txt:'Falar de forma dura, sarcástica ou irritada neutraliza o conteúdo correto da mensagem — o receptor fecha e não ouve.'},
+            {ico:'😶',name:'Não usar a linguagem "eu"',txt:'"Você me deixa estressado" acusa. "Eu me sinto sobrecarregado quando..." é mais honesto e menos conflituoso.'},
+            {ico:'🔄',name:'Ceder por pressão emocional',txt:'Mudar de posição por pressão (não por argumento real) é passividade disfarçada de flexibilidade.'},
+          ],
+          info:'🎯 Dica de ouro: ao invés de "você sempre...", diga "eu percebi que...". Pequena mudança, grande impacto. A linguagem na primeira pessoa é menos acusatória e muito mais eficaz!'
+        },
+        quiz:[
+          {q:'Por que usar frases como "você SEMPRE faz isso" é uma falha de assertividade?',
+           opts:['Porque é muito direta e objetiva demais','Porque generalizações geram defensividade no receptor e bloqueiam o diálogo','Porque é educada demais para um ambiente profissional','Porque é muito longa e cansa quem ouve'],
+           ans:1, fb:'✅ Generalizações travam tudo! "Você sempre..." faz a pessoa se defender ao invés de ouvir. Seja específico: "Nesta reunião de hoje, percebi que..." é muito mais eficaz e respeitoso.'},
+          {q:'Qual a diferença assertiva entre dizer "você é irresponsável" e "este relatório atrasou 3 dias"?',
+           opts:['Não há diferença — dizem a mesma coisa','A primeira é mais gentil e a segunda mais direta','A segunda foca no comportamento específico — é mais assertiva e menos agressiva que a primeira','A primeira usa mais dados concretos'],
+           ans:2, fb:'✅ Comportamento, não rótulo! "Você é irresponsável" julga a pessoa. "O relatório atrasou 3 dias" descreve um fato. A segunda abre espaço para solução; a primeira só gera defesa.'},
+          {q:'O que é a "linguagem eu" na comunicação assertiva?',
+           opts:['Falar apenas sobre si mesmo em toda conversa','Expressar sentimentos na própria perspectiva: "Eu me sinto..." em vez de "Você me faz sentir..."','Uma técnica de memorização de conteúdos','Uma forma de comunicação exclusivamente escrita'],
+           ans:1, fb:'✅ Linguagem "eu" é responsabilidade emocional! "Eu me sinto sobrecarregado quando recebo tarefas de última hora" é mais honesto e menos acusatório que "Você me sobrecarrega." Mesma mensagem, muito menos conflito.'}
+        ]
+      },
+      {
+        title:'Técnicas de Comunicação Assertiva',
+        sub:'Semana 5 · Aula 3',
+        learn:{
+          tag:'🛠️ Ferramentas Práticas',
+          title:'Como desenvolver a assertividade?',
+          body:`Assertividade é uma <strong>habilidade que se aprende e se pratica</strong>! O material da aula traz técnicas simples e eficazes para aplicar no dia a dia e no ambiente profissional.`,
+          concepts:[
+            {ico:'👤',name:'Fale usando o "eu"',txt:'Comece frases com "eu" — mostra que você está assumindo o que sente ou pensa sem acusar o outro. "Eu percebi que..." é melhor que "Você nunca...".'},
+            {ico:'🧘',name:'Fique calmo',txt:'A assertividade funciona melhor quando você está tranquilo. Respirar fundo e controlar as emoções ajuda a manter o equilíbrio na conversa.'},
+            {ico:'📋',name:'Atenha-se a fatos',txt:'Descreva situações específicas em vez de rotular a pessoa. "Naquele dia você chegou atrasado" vs "Você é irresponsável". Fatos geram solução; rótulos geram conflito.'},
+            {ico:'🔁',name:'Dê e receba críticas',txt:'Saber falar e ouvir críticas com respeito cria relações mais fortes. Feedback bem dado e bem recebido é uma das competências mais raras e valiosas.'},
+            {ico:'💬',name:'Técnica: frases "eu sinto que..."',txt:'Usar "Eu sinto que..." ao expressar opiniões e sentimentos torna a comunicação mais pessoal e menos confrontacional.'},
+            {ico:'🎯',name:'Pratique com segurança',txt:'Comece a praticar assertividade em situações de baixo risco antes de usá-la em conversas de alto impacto.'},
+          ],
+          info:'🚀 No material: ao receber uma mensagem confusa de um cliente com informações vagas, comunicar-se assertivamente significa perguntar com clareza o que está faltando — sem julgamento, com respeito, indo direto ao ponto!'
+        },
+        quiz:[
+          {q:'Qual técnica assertiva sugere começar frases com "eu" em vez de "você"?',
+           opts:['Técnica da escuta ativa','Técnica do espelhamento corporal','Técnica do "fale usando o eu" — assume responsabilidade emocional sem acusar o outro','Técnica da respiração profunda'],
+           ans:2, fb:'✅ "Fale usando o eu"! "Eu percebi que o prazo não foi cumprido" é muito mais assertivo que "Você nunca cumpre os prazos." Mesma informação, sem acusação, mais chance de solução.'},
+          {q:'Qual das opções representa uma técnica de comunicação assertiva que ajuda a evitar conflitos e melhora o diálogo?',
+           opts:['Usar palavras vagas e genéricas para não magoar ninguém','Usar frases como "eu sinto que..." ao expressar sentimentos e opiniões','Evitar olhar nos olhos dos outros para não parecer agressivo','Falar alto e com firmeza para mostrar segurança'],
+           ans:1, fb:'✅ "Eu sinto que..." é poderoso! Expressar sentimentos na primeira pessoa é menos confrontacional e mais honesto. Convida ao diálogo em vez de criar defesa no interlocutor.'},
+          {q:'Por que "ater-se a fatos e comportamentos" é uma técnica assertiva mais eficaz do que fazer julgamentos?',
+           opts:['Porque fatos são mais longos e cansam o interlocutor','Porque julgamentos são mais claros e objetivos que fatos','Porque fatos descrevem situações reais que abrem caminho para solução, enquanto rótulos geram apenas defesa','Porque os fatos são difíceis de contestar e encerram a conversa'],
+           ans:2, fb:'✅ Fatos geram soluções! "Você entregou o relatório com 3 dias de atraso" descreve algo real e abre caminho para conversar. "Você é negligente" só fecha o receptor. Assertividade é sobre resolver, não vencer!'}
+        ]
+      }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const KEY = 'comq_v3';
+let S = (() => {
+  try { const r = localStorage.getItem(KEY); if (r) return JSON.parse(r); } catch(e){}
+  return { xp:0, prog:[0,0,0,0,0], stars:[[],[],[],[],[]] };
+})();
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+
+let CW=0, CL=0, qI=0, qS=0;
+
+/* ═══════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  $(id).classList.add('on');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+function setXP() { $('xp1').textContent = S.xp; $('xp2').textContent = S.xp; }
+function setPb(p) { $('pbar').style.width = p + '%'; }
+
+/* ═══════════════════════════════════════════
+   MAP
+═══════════════════════════════════════════ */
+function showMap() { renderMap(); go('map'); setXP(); }
+
+function renderMap() {
+  const g = $('wgrid'); g.innerHTML = '';
+  W.forEach((w, wi) => {
+    const done    = S.prog[wi];
+    const total   = w.levels.length;
+    const locked  = wi > 0 && S.prog[wi-1] < W[wi-1].levels.length;
+    const full    = done >= total;
+    const stTotal = (S.stars[wi]||[]).reduce((a,b)=>a+b,0);
+
+    const el = document.createElement('div');
+    el.className = 'wc' + (locked?' locked':'') + (full?' done':'');
+
+    let corner = locked
+      ? '<div class="wc-corner lock">🔒</div>'
+      : full
+        ? `<div class="wc-corner star">⭐ ${stTotal}/${total*3}</div>`
+        : '';
+
+    const dotHtml = w.levels.map((_,li)=>{
+      const d = li < done, c = li === done && !locked;
+      return `<div class="dot ${d?'done':c?'cur':''}">${d?'✓':li+1}</div>`;
+    }).join('');
+
+    el.innerHTML = `
+      ${corner}
+      <span class="wc-emoji">${w.emoji}</span>
+      <div class="wc-tag px">MUNDO ${wi+1}</div>
+      <div class="wc-name">${w.name}</div>
+      <div class="wc-desc">${w.desc}</div>
+      <div class="dots">${dotHtml}</div>
+    `;
+    if (!locked) el.onclick = () => enterWorld(wi);
+    g.appendChild(el);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   LEVEL
+═══════════════════════════════════════════ */
+function enterWorld(wi) {
+  CW = wi;
+  CL = Math.min(S.prog[wi], W[wi].levels.length - 1);
+  startLevel();
+}
+
+function startLevel() {
+  qI = 0; qS = 0;
+  $('lbadge').textContent = `Mundo ${CW+1} · Fase ${CL+1}/${W[CW].levels.length}`;
+  setPb(0);
+  go('lvl');
+  renderLearn(W[CW].levels[CL]);
+}
+
+function renderLearn(lv) {
+  const l = lv.learn;
+  const cards = l.concepts.map(c => `
+    <div class="ci">
+      <div class="ci-ico">${c.ico}</div>
+      <div class="ci-name">${c.name}</div>
+      <div class="ci-text">${c.txt}</div>
+    </div>
+  `).join('');
+
+  $('lcontent').innerHTML = `
+    <div class="card" style="animation:fadeUp .45s ease">
+      <span class="l-tag">${l.tag}</span>
+      <div class="l-title">${l.title}</div>
+      <div class="l-body">${l.body}</div>
+      <div class="c-grid">${cards}</div>
+      <div class="info-box">${l.info}</div>
+    </div>
+    <div style="text-align:center;margin-top:22px">
+      <button class="btn btn-teal" onclick="startQuiz()">🎮 Iniciar Quiz →</button>
+    </div>
+  `;
+  setPb(15);
+}
+
+function startQuiz() { qI = 0; qS = 0; renderQ(); }
+
+function renderQ() {
+  const lv = W[CW].levels[CL];
+  const q  = lv.quiz[qI];
+  const tot = lv.quiz.length;
+  setPb(15 + (qI / tot) * 85);
+
+  const KEYS = ['A','B','C','D'];
+  const optHtml = q.opts.map((o, i) => `
+    <button class="opt" style="animation:slideIn .35s ease ${i*.07}s both"
+            onclick="pick(${i})">
+      <span class="opt-k">${KEYS[i]}</span>${o}
+    </button>
+  `).join('');
+
+  $('lcontent').innerHTML = `
+    <div class="card" style="animation:fadeUp .45s ease">
+      <div class="qmeta">
+        <div class="q-count">Questão ${qI+1} de ${tot}</div>
+        <div class="q-xp">🪙 ${qS*10} XP</div>
+      </div>
+      <div class="question">${q.q}</div>
+      <div class="opts">${optHtml}</div>
+      <div class="fb" id="fb"></div>
+    </div>
+  `;
+}
+
+function pick(idx) {
+  const lv = W[CW].levels[CL];
+  const q  = lv.quiz[qI];
+  const ok = idx === q.ans;
+
+  document.querySelectorAll('.opt').forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.ans)          b.classList.add('ok');
+    else if (i === idx && !ok) b.classList.add('bad');
+  });
+
+  const fb = $('fb');
+  if (ok) { fb.className = 'fb ok show'; fb.textContent = q.fb; qS++; }
+  else     { fb.className = 'fb bad show'; fb.textContent = '❌ ' + q.fb; }
+
+  setTimeout(() => {
+    qI++;
+    if (qI < lv.quiz.length) renderQ();
+    else                      showResult();
+  }, 2350);
+}
+
+/* ═══════════════════════════════════════════
+   RESULT
+═══════════════════════════════════════════ */
+function showResult() {
+  const lv    = W[CW].levels[CL];
+  const total = lv.quiz.length;
+  const stars = qS === total ? 3 : qS >= total-1 ? 2 : qS >= 1 ? 1 : 0;
+  const xp    = stars * 50 + qS * 10;
+
+  if (!S.stars[CW]) S.stars[CW] = [];
+  S.stars[CW][CL] = Math.max(stars, S.stars[CW][CL] || 0);
+  if (CL >= S.prog[CW] && stars > 0) S.prog[CW] = CL + 1;
+  S.xp += xp; save(); setXP();
+
+  const M = {
+    3: { e:'🏆', t:'PERFEITO!',         s:'Você acertou tudo! Expert em comunicação!' },
+    2: { e:'🌟', t:'ÓTIMO!',            s:'Quase perfeito! Você domina o conteúdo.' },
+    1: { e:'👍', t:'BOM TRABALHO!',     s:'Continue praticando para dominar mais!' },
+    0: { e:'💪', t:'TENTE NOVAMENTE!',  s:'Revise o conteúdo e tente outra vez!' },
+  };
+  const m = M[stars];
+  $('re').textContent    = m.e;
+  $('rt').textContent    = m.t;
+  $('rs').textContent    = m.s + ` (${qS}/${total} corretas)`;
+  $('rstar').textContent = '⭐'.repeat(stars) + '☆'.repeat(3-stars);
+  $('rxp').textContent   = `+ ${xp} XP ganhos!`;
+
+  const btn = $('rnext');
+  const nL  = CL + 1;
+  const nW  = CW + 1;
+  if      (nL < W[CW].levels.length) { btn.textContent = 'Próxima Fase →';   btn.onclick = () => { CL = nL; startLevel(); }; }
+  else if (nW < W.length)            { btn.textContent = 'Próximo Mundo 🌍'; btn.onclick = () => { CW = nW; CL = 0; startLevel(); }; }
+  else                               { btn.textContent = '🏆 Ver Conquistas'; btn.onclick = showMap; }
+
+  go('res');
+  if (stars >= 2) rain();
+}
+
+/* ═══════════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════════ */
+function rain() {
+  const c = $('conf'); c.innerHTML = '';
+  const cols = ['#b48aff','#5ce0d8','#f472b6','#4ade80','#fff','#818cf8'];
+  for (let i = 0; i < 75; i++) {
+    const p = document.createElement('div');
+    p.className = 'cp';
+    const s = 7 + Math.random() * 9;
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      width:${s}px; height:${s}px;
+      background:${cols[Math.floor(Math.random()*cols.length)]};
+      animation-delay:${Math.random()*1.3}s;
+      border-radius:${Math.random()>.5?'50%':'3px'};
+    `;
+    c.appendChild(p);
+  }
+  setTimeout(() => c.innerHTML = '', 4200);
+}
+
+/* ═══════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════ */
+setXP();
+go('intro');
+</script>
+</body>
+</html>
